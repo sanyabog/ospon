@@ -18,8 +18,8 @@ class bal():
 	def __init__(self,x,y):
 		self.x=x
 		self.y=y
-		self.velx=rand(0,balspeed)*rabal(-1,2,2)
-		self.vely=((balspeed**2-self.velx**2)**0.5)*rabal(-1,2,2)
+		self.velx=rand(0,int(balspeed))*rabal(-1,2,2)
+		self.vely=((int(balspeed)**2-self.velx**2)**0.5)*rabal(-1,2,2)
 	def drawball(self):
 		wingame.blit(ball,(self.x,self.y))
 			
@@ -85,12 +85,16 @@ def drawstart():
 	string.blit(levels_font.render('easy',1,(210,0,0)),[180,20])
 	string.blit(levels_font.render('medium',1,(210,0,0)),[200,170])
 	string.blit(levels_font.render('hard',1,(210,0,0)),[290,320])
+	string.blit(lives_font.render('hardmod',1,(110,0,30)),[20,300])
+	string.blit(lives_font.render('press  H  for fun',1,(110,50,30)),[420,250])
+
 	win.blit(pygame.transform.rotate(fonmenu,180),(0,0))
 	wingame.blit(fonmenu,(0,0))
 	for balu in balls: balu.drawball()
 	pygame.draw.rect(string,(0,100,200),(160,ramah*150+10,260,50),10)
-	win.blit(wingame,(0,40))
-	win.blit(string,(350,100))
+	if tmam==1: pygame.draw.rect(string,(0,250,0),(5,295,160,50),10)
+	win.blit(wingame,(0,sizestroki))
+	win.blit(string,(wingsize[0]/3.9,wingsize[1]/7.68))
 	
 	string.fill((94,176,108))
 	
@@ -110,14 +114,17 @@ def draw():
 	
 	
 	for balu in balls: balu.drawball()
-	wingame.blit(score_font.render('time: '+ str(time//30),1,(210,100,0),(221,171,0)),[500,690])
 
+	if tmam==1: wingame.blit(tma,(x-wingsize[0]-15,y-wingsize[1]+30))
+
+	wingame.blit(score_font.render('time: '+ str(time//30),1,(210,100,0),(221,171,0)),[wingsize[0]*0.5,wingsize[1]/1.05])
+	wingame.blit(lives_font.render('fps: '+ str(int(clock.get_fps())),1,(210,100,0),(221,171,0)),[wingsize[0]*0.1,wingsize[1]/1.06])
 	
-	win.blit(wingame,(0,40))
+	win.blit(wingame,(0,sizestroki))
 	pygame.display.update()
 
 def inter(x1,x2,y1,y2):
-	if ((x1-x2)**2+((y1-y2)*0.9)**2<Rkv): return 1
+	if ((x1-x2)**2+((y1-y2)*0.99)**2<Rkv): return 1
 	else: return 0
 
 def otskok():
@@ -139,9 +146,10 @@ def drawstring():
 	info_string.fill((221,171,0))
 	pygame.display.update()
 
-info_string=pygame.Surface((winsize[0],42))
+info_string=pygame.Surface((winsize[0],winsize[1]/19.2))
+sizestroki=pygame.Surface.get_size(info_string)[1]
 string=pygame.Surface((winsize[0]/2,winsize[1]/2))
-wingame=pygame.Surface((winsize[0],winsize[1]-40))
+wingame=pygame.Surface((winsize[0],winsize[1]-sizestroki))
 pygame.mouse.set_visible(False)
 
 wingsize=pygame.Surface.get_size(wingame)
@@ -180,8 +188,12 @@ pon=[
 
 fon=pygame.transform.scale(pygame.image.load('picture/fon.png'),(winsize[0],winsize[1]-40)).convert()
 fonmenu=pygame.transform.scale(pygame.image.load('picture/pixelfon.jpg'),winsize).convert()
+tma=pygame.transform.scale(pygame.image.load('picture/tma.png'),(wingsize[0]*2,wingsize[1]*2))
+
 clock=pygame.time.Clock()
 game=True
+tmam=-1
+ramah=0
 while game:
 
 	
@@ -196,8 +208,6 @@ while game:
 	score=0
 	lives=0
 	balspeed=10
-	ramah=0
-	t=ramah
 	run=True
 	balls=[]
 	time=0
@@ -223,6 +233,7 @@ while game:
 				if (event.key==pygame.K_UP or event.key==pygame.K_w) and ramah>0: ramah-=1
 				elif (event.key==pygame.K_DOWN or event.key==pygame.K_s) and ramah<2: ramah+=1
 				elif (event.key==pygame.K_SPACE): run=False
+				if event.key==pygame.K_h: tmam*=-1
 
 		for balu in balls:
 			otskok()
@@ -297,7 +308,7 @@ while game:
 		draw()
 	
 	run=True
-	win.blit(fon,(0,0))
+	win.blit(fon,(0,sizestroki))
 	string.fill((181,225,45))
 	
 	string.blit(zanovo_font.render('your score: '+ str(score),1,(210,0,0)),[250,20])
@@ -305,7 +316,7 @@ while game:
 	string.blit(zanovo_font.render('for exit press ""escape""',1,(210,0,0)),[250,240])
 	string.blit(zanovo_font.render('for playing press "space"',1,(210,0,0)),[50,330])
 	
-	win.blit(string,(350,100))
+	win.blit(string,(wingsize[0]/3.9,wingsize[1]/7.68))
 	
 	pygame.display.update()
 	while run:
